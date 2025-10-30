@@ -1,6 +1,6 @@
 {
   "name": "react-native-motionify",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A lightweight library for smooth, scroll-driven UI with Reanimated 3.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
