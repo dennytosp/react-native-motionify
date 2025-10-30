@@ -1,0 +1,8 @@
+example/
+node_modules/
+.vscode/
+dist/
+test/
+docs/
+CHANGELOG.md
+*.lock

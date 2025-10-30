@@ -1,0 +1,48 @@
+{
+  "name": "react-native-motionify",
+  "version": "1.0.0",
+  "description": "A lightweight library for smooth, scroll-driven UI with Reanimated 3.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepack": "bun run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dennytosp/react-native-motionify.git"
+  },
+  "keywords": [
+    "react-native",
+    "motionify",
+    "animation",
+    "reanimated",
+    "scroll",
+    "gestures",
+    "animated-value",
+    "responsive-ui"
+  ],
+  "author": "mad.dinh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dennytosp/react-native-motionify/issues"
+  },
+  "homepage": "https://github.com/dennytosp/react-native-motionify#readme",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-native": ">=0.60.0",
+    "react-native-reanimated": ">=3.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-native": "^0.72.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "lib",
+    "src",
+    "README.md"
+  ]
+}
