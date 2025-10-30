@@ -249,19 +249,6 @@ export interface MotionifyViewWithInterpolationProps
 /**
  * Helper function to get extrapolation mode
  */
-const getExtrapolationMode = (
-  extrapolate?: "extend" | "identity" | "clamp"
-): Extrapolation => {
-  switch (extrapolate) {
-    case "extend":
-      return Extrapolation.EXTEND;
-    case "identity":
-      return Extrapolation.IDENTITY;
-    case "clamp":
-    default:
-      return Extrapolation.CLAMP;
-  }
-};
 
 /**
  * MotionifyViewWithInterpolation - Advanced view with scroll-based interpolation
@@ -349,7 +336,7 @@ export const MotionifyViewWithInterpolation: React.FC<
         scrollValue.value,
         inputRange,
         outputRange as number[],
-        getExtrapolationMode(extrapolate)
+        extrapolate ?? Extrapolation.CLAMP
       );
     }
 
@@ -362,7 +349,7 @@ export const MotionifyViewWithInterpolation: React.FC<
           scrollValue.value,
           inputRange,
           outputRange as number[],
-          getExtrapolationMode(extrapolate)
+          extrapolate ?? Extrapolation.CLAMP
         ),
       });
     }
@@ -376,7 +363,7 @@ export const MotionifyViewWithInterpolation: React.FC<
           scrollValue.value,
           inputRange,
           outputRange as number[],
-          getExtrapolationMode(extrapolate)
+          extrapolate ?? Extrapolation.CLAMP
         ),
       });
     }
@@ -389,7 +376,7 @@ export const MotionifyViewWithInterpolation: React.FC<
           scrollValue.value,
           inputRange,
           outputRange as number[],
-          getExtrapolationMode(extrapolate)
+          extrapolate ?? Extrapolation.CLAMP
         ),
       });
     }
@@ -402,7 +389,7 @@ export const MotionifyViewWithInterpolation: React.FC<
           scrollValue.value,
           inputRange,
           outputRange as number[],
-          getExtrapolationMode(extrapolate)
+          extrapolate ?? Extrapolation.CLAMP
         ),
       });
     }
@@ -415,7 +402,7 @@ export const MotionifyViewWithInterpolation: React.FC<
           scrollValue.value,
           inputRange,
           outputRange as number[],
-          getExtrapolationMode(extrapolate)
+          extrapolate ?? Extrapolation.CLAMP
         ),
       });
     }
@@ -427,7 +414,7 @@ export const MotionifyViewWithInterpolation: React.FC<
         scrollValue.value,
         inputRange,
         outputRange as number[],
-        getExtrapolationMode(extrapolate)
+        extrapolate ?? Extrapolation.CLAMP
       );
       transform.push({ rotate: `${rotateValue}deg` });
     }

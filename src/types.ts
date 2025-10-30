@@ -7,7 +7,7 @@
  * @packageDocumentation
  */
 
-import type { SharedValue } from "react-native-reanimated";
+import type { Extrapolation, SharedValue } from "react-native-reanimated";
 import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 
 /**
@@ -67,7 +67,7 @@ export interface InterpolationConfig {
    * - 'identity': Return input value as-is
    * @default 'clamp'
    */
-  extrapolate?: "extend" | "identity" | "clamp";
+  extrapolate?: Extrapolation;
 }
 
 /**

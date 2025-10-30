@@ -202,17 +202,9 @@ export const INTERPOLATION_PRESETS = {
  * @returns Reanimated Extrapolation enum value
  */
 export const getExtrapolationMode = (
-  extrapolate?: "extend" | "identity" | "clamp"
+  extrapolate?: Extrapolation
 ): Extrapolation => {
-  switch (extrapolate) {
-    case "extend":
-      return Extrapolation.EXTEND;
-    case "identity":
-      return Extrapolation.IDENTITY;
-    case "clamp":
-    default:
-      return Extrapolation.CLAMP;
-  }
+  return extrapolate ?? Extrapolation.CLAMP;
 };
 
 /**
@@ -238,7 +230,7 @@ export const createTranslationRange = (from: number, to: number) => ({
 export const createInterpolation = (
   inputRange: number[],
   outputRange: number[] | string[],
-  extrapolate: "extend" | "identity" | "clamp" = "clamp"
+  extrapolate: Extrapolation = Extrapolation.CLAMP
 ): InterpolationConfig => ({
   inputRange,
   outputRange,
@@ -258,7 +250,7 @@ export const createFadeInterpolation = (
 ): InterpolationConfig => ({
   inputRange: [0, scrollDistance / 2, scrollDistance],
   outputRange: fadeIn ? [0, 0.5, 1] : [1, 0.5, 0],
-  extrapolate: "clamp",
+  extrapolate: Extrapolation.CLAMP,
 });
 
 /**
@@ -276,7 +268,7 @@ export const createScaleInterpolation = (
 ): InterpolationConfig => ({
   inputRange: [0, scrollDistance],
   outputRange: [fromScale, toScale],
-  extrapolate: "clamp",
+  extrapolate: Extrapolation.CLAMP,
 });
 
 /**
@@ -292,7 +284,7 @@ export const createParallaxInterpolation = (
 ): InterpolationConfig => ({
   inputRange: [0, scrollDistance],
   outputRange: [0, -scrollDistance * parallaxFactor],
-  extrapolate: "extend",
+  extrapolate: Extrapolation.EXTEND,
 });
 
 /**
@@ -308,7 +300,7 @@ export const createRotationInterpolation = (
 ): InterpolationConfig => ({
   inputRange: [0, scrollDistance],
   outputRange: [0, rotationDegrees],
-  extrapolate: "clamp",
+  extrapolate: Extrapolation.CLAMP,
 });
 
 /**
