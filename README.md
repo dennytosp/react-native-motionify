@@ -10,6 +10,10 @@ A lightweight, production-ready toolkit for smooth, scroll-driven UI with Reanim
 
 ---
 
+https://github.com/user-attachments/assets/133b5ddf-9a9a-48a1-9697-ab40de0534a1
+
+---
+
 ## Installation
 
 ```bash
