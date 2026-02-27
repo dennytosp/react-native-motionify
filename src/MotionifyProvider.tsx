@@ -24,6 +24,7 @@ import type {
   Direction,
   MotionifyContextValue,
   MotionifyConfig,
+  TabBarControls,
 } from "./types";
 
 /**
@@ -101,6 +102,7 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
   // Reanimated shared values (UI thread)
   const scrollY = useSharedValue(0);
   const directionShared = useSharedValue<Direction>("idle");
+  const tabBarOverride = useSharedValue<'show' | 'hide' | 'none'>("none");
 
   // React state (JS thread)
   const [direction, setDirection] = useState<Direction>("idle");
@@ -255,6 +257,32 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
   }, []);
 
   /**
+   * Tab bar visibility controls
+   * Programmatically control tab bar show/hide/reset
+   * Uses Reanimated v4 .set() API for React Compiler compatibility
+   */
+  const showTabBar = useCallback(() => {
+    tabBarOverride.set("show");
+  }, [tabBarOverride]);
+
+  const hideTabBar = useCallback(() => {
+    tabBarOverride.set("hide");
+  }, [tabBarOverride]);
+
+  const resetTabBar = useCallback(() => {
+    tabBarOverride.set("none");
+  }, [tabBarOverride]);
+
+  const tabBarControls: TabBarControls = useMemo(
+    () => ({
+      show: showTabBar,
+      hide: hideTabBar,
+      reset: resetTabBar,
+    }),
+    [showTabBar, hideTabBar, resetTabBar]
+  );
+
+  /**
    * Memoized context value
    */
   const contextValue = useMemo<MotionifyContextValue>(
@@ -266,6 +294,8 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
       onScroll,
       setThreshold,
       setSupportIdle,
+      tabBar: tabBarControls,
+      tabBarOverride,
     }),
     [
       scrollY,
@@ -275,6 +305,8 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
       onScroll,
       setThreshold,
       setSupportIdle,
+      tabBarControls,
+      tabBarOverride,
     ]
   );
 

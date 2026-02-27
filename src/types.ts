@@ -105,6 +105,28 @@ export interface TransformStyle {
 }
 
 /**
+ * Tab bar visibility control methods
+ */
+export interface TabBarControls {
+  /**
+   * Programmatically show the tab bar
+   * Useful when navigating between tabs programmatically
+   */
+  show: () => void;
+
+  /**
+   * Programmatically hide the tab bar
+   */
+  hide: () => void;
+
+  /**
+   * Reset tab bar to its default visible state
+   * Clears any forced visibility overrides
+   */
+  reset: () => void;
+}
+
+/**
  * Internal context value shared by MotionifyProvider
  * @internal
  */
@@ -143,6 +165,18 @@ export interface MotionifyContextValue {
    * Enable/disable idle state support
    */
   setSupportIdle: (supportIdle: boolean) => void;
+
+  /**
+   * Tab bar visibility controls
+   * Use these to programmatically show/hide/reset the tab bar
+   */
+  tabBar: TabBarControls;
+
+  /**
+   * Shared value for tab bar visibility override
+   * @internal
+   */
+  tabBarOverride: SharedValue<'show' | 'hide' | 'none'>;
 }
 
 /**

@@ -65,6 +65,7 @@ export type {
   TransformStyle,
   MotionifyContextValue,
   HideOnScrollProps,
+  TabBarControls,
 } from "./types";
 
 // ============================================================================
