@@ -8,7 +8,8 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepack": "bun run build"
+    "prepack": "bun run build",
+    "publish": "./scripts/node publish.js"
   },
   "repository": {
     "type": "git",
