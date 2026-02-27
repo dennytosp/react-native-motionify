@@ -119,8 +119,8 @@ const MotionifyBottomTabBar = (props: MotionifyBottomTabBarProps) => {
               options.tabBarLabel !== undefined
                 ? options.tabBarLabel
                 : options.title !== undefined
-                  ? options.title
-                  : route.name;
+                ? options.title
+                : route.name;
 
             const isFocused = state.index === index;
             const isLastIndex = Number(state.routes.length - 1) === index;

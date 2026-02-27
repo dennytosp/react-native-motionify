@@ -132,7 +132,7 @@ export const MotionifyBottomTab: React.FC<MotionifyBottomTabProps> = ({
   currentId,
   ...restProps
 }) => {
-  const { directionShared } = useMotionify({ supportIdle });
+  const { directionShared, tabBarOverride } = useMotionify({ supportIdle });
 
   // Track previous route ID to detect route changes
   const prevIdRef = useRef<string | undefined>(currentId);
@@ -157,33 +157,45 @@ export const MotionifyBottomTab: React.FC<MotionifyBottomTabProps> = ({
   /**
    * Derived value for translateY animation
    * Runs entirely on UI thread using worklets
+   * Uses Reanimated v4 .get() API for React Compiler compatibility
    */
   const translateY = useDerivedValue(() => {
     "worklet";
 
-    // Always show when route is excluded
+    // Priority 1: Programmatic override (show/hide)
+    const override = tabBarOverride.get();
+    if (override === "show") {
+      return withTiming(translateRange.from, timingConfig);
+    }
+    if (override === "hide") {
+      return withTiming(translateRange.to, timingConfig);
+    }
+
+    // Priority 2: Always show when route is excluded
     if (isExcluded) {
       return withTiming(translateRange.from, timingConfig);
     }
 
-    // Reset to visible position on route change
+    // Priority 3: Reset to visible position on route change
     if (idChanged) {
       return withTiming(translateRange.from, timingConfig);
     }
 
+    // Priority 4: Scroll direction based behavior
     // Hide when scrolling in hideOn direction
-    if (directionShared.value === hideOn) {
+    const direction = directionShared.get();
+    if (direction === hideOn) {
       return withTiming(translateRange.to, timingConfig);
     }
 
     // Show when scrolling in opposite direction
-    if (directionShared.value !== hideOn) {
+    if (direction !== hideOn) {
       return withTiming(translateRange.from, timingConfig);
     }
 
     // Default to visible
     return translateRange.from;
-  }, [hideOn, translateRange, isExcluded, idChanged, directionShared]);
+  }, [hideOn, translateRange, isExcluded, idChanged, directionShared, tabBarOverride]);
 
   const animatedStyle = useAnimatedStyle(() => {
     "worklet";

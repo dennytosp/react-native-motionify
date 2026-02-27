@@ -215,6 +215,7 @@ Notes:
 
 - Ensure each screen that should control the tab wires `onScroll`.
 - Use `exclude` and `currentId` on `MotionifyBottomTab` to keep the tab visible on specific routes.
+- Use `tabBar.show()` when navigating programmatically to ensure tab bar is visible.
 
 ---
 
@@ -240,8 +241,48 @@ Returns:
 - **onScroll**: Scroll handler for `ScrollView`/`FlatList`
 - **setThreshold(threshold)**
 - **setSupportIdle(enabled)**
+- **tabBar**: Tab bar visibility controls (see below)
 
 Optional config: `{ threshold?: number; supportIdle?: boolean }`
+
+#### Tab Bar Controls
+
+Use `tabBar` object from `useMotionify()` to programmatically control tab bar visibility:
+
+```tsx
+const { tabBar } = useMotionify();
+
+// Show tab bar programmatically
+tabBar.show();
+
+// Hide tab bar programmatically
+tabBar.hide();
+
+// Reset to default scroll-based behavior
+tabBar.reset();
+```
+
+**Use case**: When navigating between tabs programmatically (e.g., from a CTA button), the tab bar may remain hidden. Call `tabBar.show()` to ensure it appears:
+
+```tsx
+function HomeScreen() {
+  const { onScroll, tabBar } = useMotionify();
+  const navigation = useNavigation();
+
+  const goToRewards = () => {
+    // Show tab bar before navigating
+    tabBar.show();
+    navigation.navigate('Rewards');
+  };
+
+  return (
+    <ScrollView onScroll={onScroll} scrollEventThrottle={16}>
+      {/* content */}
+      <Button title="Go to Rewards" onPress={goToRewards} />
+    </ScrollView>
+  );
+}
+```
 
 ### Components
 
@@ -284,6 +325,54 @@ Optional config: `{ threshold?: number; supportIdle?: boolean }`
     <TabBar />
   </MotionifyBottomTab>
 </MotionifyProvider>
+```
+
+### Programmatically Show/Hide Tab Bar
+
+When user scrolls down, the tab bar hides. If you navigate to another tab programmatically (e.g., via CTA button), the tab bar may remain hidden. Use `tabBar.show()` to fix this:
+
+```tsx
+import { useNavigation } from '@react-navigation/native';
+import { useMotionify } from 'react-native-motionify';
+
+function HomeScreen() {
+  const { onScroll, tabBar } = useMotionify();
+  const navigation = useNavigation();
+
+  const goToRewards = () => {
+    // Ensure tab bar is visible before navigating
+    tabBar.show();
+    navigation.navigate('Rewards');
+  };
+
+  return (
+    <ScrollView onScroll={onScroll} scrollEventThrottle={16}>
+      <Text>Home Content</Text>
+      
+      {/* CTA Button that navigates to another tab */}
+      <Button title="View Rewards" onPress={goToRewards} />
+    </ScrollView>
+  );
+}
+
+// In your tab navigator, the tab bar stays hidden until show() is called
+function AppShell() {
+  return (
+    <MotionifyProvider>
+      <Tab.Navigator tabBar={(props) => (
+        <MotionifyBottomTab 
+          hideOn="down" 
+          translateRange={{ from: 0, to: 80 }}
+        >
+          <TabBar {...props} />
+        </MotionifyBottomTab>
+      )}>
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Rewards" component={RewardsScreen} />
+      </Tab.Navigator>
+    </MotionifyProvider>
+  );
+}
 ```
 
 ### Parallax Header
