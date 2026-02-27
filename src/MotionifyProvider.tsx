@@ -226,6 +226,12 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
       if (newDirection && newDirection !== directionShared.value) {
         directionShared.value = newDirection;
         runOnJS(updateDirection)(newDirection);
+        
+        // Reset tab bar override when scroll direction changes
+        // This allows scroll-based behavior to resume after programmatic control
+        if (tabBarOverride.value !== "none") {
+          tabBarOverride.value = "none";
+        }
       }
 
       // Update previous position for next frame
@@ -234,6 +240,7 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
     [
       scrollY,
       directionShared,
+      tabBarOverride,
       resetScrollTimeout,
       updateDirection,
       updateIsScrolling,
