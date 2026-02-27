@@ -2,12 +2,13 @@ const { execSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
-const rootDir = __dirname;
+// This script lives in `scripts/`, so project root is one level up.
+const rootDir = path.resolve(__dirname, "..");
 const packageJsonPath = path.join(rootDir, "package.json");
 
 function run(command) {
   console.log(`\n$ ${command}`);
-  execSync(command, { stdio: "inherit" });
+  execSync(command, { stdio: "inherit", cwd: rootDir });
 }
 
 function bumpPatchVersion(version) {
