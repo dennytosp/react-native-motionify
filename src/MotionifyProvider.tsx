@@ -19,13 +19,20 @@ import React, {
   type ReactNode,
 } from "react";
 import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
-import { runOnJS, useSharedValue } from "react-native-reanimated";
+import { useSharedValue } from "react-native-reanimated";
 import type {
   Direction,
   MotionifyContextValue,
   MotionifyConfig,
+  ScrollEventHandler,
   TabBarControls,
 } from "./types";
+import {
+  createScrollTracker,
+  resolveMotionifyConfig,
+  updateScrollTracker,
+  type ScrollTracker,
+} from "./scroll";
 
 /**
  * Default configuration values
@@ -37,7 +44,22 @@ const IDLE_TIMEOUT_MS = 200;
 /**
  * React Context for motionify scroll state
  */
-const MotionifyContext = createContext<MotionifyContextValue | null>(null);
+interface ScrollTrackerRef {
+  current: ScrollTracker;
+}
+
+interface MotionifyInternalContextValue extends MotionifyContextValue {
+  handleScroll: (
+    event: Parameters<ScrollEventHandler>[0],
+    trackerRef: ScrollTrackerRef,
+    config: MotionifyConfig,
+  ) => void;
+  registerSupportIdle: () => () => void;
+}
+
+const MotionifyContext = createContext<MotionifyInternalContextValue | null>(
+  null,
+);
 
 /**
  * Props for MotionifyProvider component
@@ -65,8 +87,8 @@ export interface MotionifyProviderProps {
  * MotionifyProvider - Context provider for motionify scroll animations
  *
  * Wraps your app or screen to provide motionify scroll state to all child components.
- * Automatically tracks scroll position and direction using Reanimated worklets
- * for optimal performance.
+ * Tracks scroll position and direction, then publishes SharedValues for
+ * UI-thread animations.
  *
  * @example
  * ```tsx
@@ -111,12 +133,12 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
   const [supportIdle, setSupportIdleState] = useState(initialSupportIdle);
 
   // Refs for tracking scroll state
-  const previousYRef = useRef(0);
-  const scrollStartYRef = useRef(0);
-  const isUserScrollingRef = useRef(false);
+  const providerScrollTrackerRef = useRef(createScrollTracker());
   // `ReturnType<typeof setTimeout>` rather than `NodeJS.Timeout`: React Native
   // has no NodeJS namespace, and its setTimeout returns a number.
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const idleGenerationRef = useRef(0);
+  const supportIdleRequestCountRef = useRef(0);
   const thresholdRef = useRef(threshold);
   const supportIdleRef = useRef(supportIdle);
 
@@ -147,33 +169,57 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
    * Reset scroll state to idle after timeout
    */
   const resetToIdle = useCallback(() => {
-    isUserScrollingRef.current = false;
+    idleGenerationRef.current += 1;
     directionShared.value = "idle";
     setDirection("idle");
     setIsScrolling(false);
   }, [directionShared]);
 
+  const clearScrollTimeout = useCallback(() => {
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = null;
+    }
+  }, []);
+
   /**
    * Handle scroll timeout for idle state detection
    */
   const resetScrollTimeout = useCallback(() => {
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
+    clearScrollTimeout();
 
     scrollTimeoutRef.current = setTimeout(() => {
       resetToIdle();
     }, IDLE_TIMEOUT_MS);
-  }, [resetToIdle]);
+  }, [clearScrollTimeout, resetToIdle]);
 
   /**
-   * Main scroll event handler
-   * Runs on UI thread using Reanimated worklets for optimal performance
+   * Keep component-level idle requests active while at least one requesting
+   * MotionifyView or MotionifyBottomTab is mounted.
    */
-  const onScroll = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      "worklet";
+  const registerSupportIdle = useCallback(() => {
+    supportIdleRequestCountRef.current += 1;
 
+    return () => {
+      supportIdleRequestCountRef.current = Math.max(
+        0,
+        supportIdleRequestCountRef.current - 1,
+      );
+    };
+  }, []);
+
+  /**
+   * Main scroll event handler.
+   *
+   * Direction detection runs on the React Native JS event thread. Shared
+   * values publish its output to UI-thread animations.
+   */
+  const handleScroll = useCallback(
+    (
+      event: NativeSyntheticEvent<NativeScrollEvent>,
+      trackerRef: ScrollTrackerRef,
+      consumerConfig: MotionifyConfig,
+    ) => {
       const currentY = event.nativeEvent.contentOffset.y;
       const contentHeight = event.nativeEvent.contentSize.height;
       const layoutHeight = event.nativeEvent.layoutMeasurement.height;
@@ -185,49 +231,40 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
       // Update shared value (UI thread)
       scrollY.value = clampedY;
 
-      // Calculate delta from previous position
-      const deltaY = clampedY - previousYRef.current;
+      const activeConfig = resolveMotionifyConfig(
+        {
+          threshold: thresholdRef.current,
+          supportIdle:
+            supportIdleRef.current || supportIdleRequestCountRef.current > 0,
+        },
+        consumerConfig,
+      );
 
-      // Initialize scroll start position on first scroll
-      if (!isUserScrollingRef.current) {
-        isUserScrollingRef.current = true;
-        scrollStartYRef.current = clampedY;
+      const trackerUpdate = updateScrollTracker(
+        trackerRef.current,
+        clampedY,
+        activeConfig.threshold,
+        idleGenerationRef.current,
+      );
+      trackerRef.current = trackerUpdate.tracker;
 
-        // Update scrolling state on JS thread
-        runOnJS(updateIsScrolling)(true);
+      if (trackerUpdate.startedScrolling) {
+        updateIsScrolling(true);
       }
 
-      // Detect direction change
-      const currentTotalDelta = clampedY - scrollStartYRef.current;
-      const isDirectionChange =
-        (currentTotalDelta > 0 && deltaY < 0) || // Was scrolling down, now up
-        (currentTotalDelta < 0 && deltaY > 0) || // Was scrolling up, now down
-        (currentTotalDelta === 0 && Math.abs(deltaY) > 0); // Started scrolling
-
-      // Reset scroll start on direction change
-      if (isDirectionChange) {
-        scrollStartYRef.current = clampedY;
+      // Handle idle timeout if enabled for this scroll handler
+      if (activeConfig.supportIdle) {
+        resetScrollTimeout();
+      } else if (scrollTimeoutRef.current) {
+        clearScrollTimeout();
       }
 
-      // Handle idle timeout if enabled
-      if (supportIdleRef.current) {
-        runOnJS(resetScrollTimeout)();
-      }
-
-      // Determine new direction based on total delta from scroll start
-      const totalDelta = clampedY - scrollStartYRef.current;
-      let newDirection: Direction | null = null;
-
-      if (totalDelta > 0) {
-        newDirection = "down";
-      } else if (totalDelta < -thresholdRef.current) {
-        newDirection = "up";
-      }
+      const newDirection = trackerUpdate.direction;
 
       // Update direction if changed
       if (newDirection && newDirection !== directionShared.value) {
         directionShared.value = newDirection;
-        runOnJS(updateDirection)(newDirection);
+        updateDirection(newDirection);
 
         // Reset tab bar override when scroll direction changes
         // This allows scroll-based behavior to resume after programmatic control
@@ -235,14 +272,12 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
           tabBarOverride.value = "none";
         }
       }
-
-      // Update previous position for next frame
-      previousYRef.current = clampedY;
     },
     [
       scrollY,
       directionShared,
       tabBarOverride,
+      clearScrollTimeout,
       resetScrollTimeout,
       updateDirection,
       updateIsScrolling,
@@ -296,15 +331,24 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
   /**
    * Memoized context value
    */
-  const contextValue = useMemo<MotionifyContextValue>(
+  const onScroll = useCallback<ScrollEventHandler>(
+    (event) => {
+      handleScroll(event, providerScrollTrackerRef, {});
+    },
+    [handleScroll],
+  );
+
+  const contextValue = useMemo<MotionifyInternalContextValue>(
     () => ({
       scrollY,
       direction,
       directionShared,
       isScrolling,
       onScroll,
+      handleScroll,
       setThreshold,
       setSupportIdle,
+      registerSupportIdle,
       tabBar: tabBarControls,
       tabBarOverride,
     }),
@@ -314,8 +358,10 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
       directionShared,
       isScrolling,
       onScroll,
+      handleScroll,
       setThreshold,
       setSupportIdle,
+      registerSupportIdle,
       tabBarControls,
       tabBarOverride,
     ],
@@ -323,12 +369,8 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
 
   // Cleanup timeout on unmount
   useEffect(() => {
-    return () => {
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-    };
-  }, []);
+    return clearScrollTimeout;
+  }, [clearScrollTimeout]);
 
   return (
     <MotionifyContext.Provider value={contextValue}>
@@ -358,7 +400,7 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
  * }
  * ```
  */
-export const useMotionifyContext = (): MotionifyContextValue => {
+const useMotionifyInternalContext = (): MotionifyInternalContextValue => {
   const context = useContext(MotionifyContext);
 
   if (!context) {
@@ -371,12 +413,32 @@ export const useMotionifyContext = (): MotionifyContextValue => {
   return context;
 };
 
+export const useMotionifyContext = (): MotionifyContextValue =>
+  useMotionifyInternalContext();
+
+/**
+ * Register component-level idle support without allowing one component's
+ * cleanup to disable another mounted component.
+ *
+ * @internal
+ */
+export const useMotionifySupportIdle = (enabled: boolean): void => {
+  const { registerSupportIdle } = useMotionifyInternalContext();
+
+  useEffect(() => {
+    if (enabled) {
+      return registerSupportIdle();
+    }
+  }, [enabled, registerSupportIdle]);
+};
+
 /**
  * Hook for configuring motionify scroll behavior
  *
  * Provides access to scroll state with optional configuration.
  * Use this hook in screens where you want to attach scroll handlers
- * or customize scroll detection behavior.
+ * or customize scroll detection behavior. Configuration is scoped to the
+ * returned scroll handler, so mounted screens do not overwrite each other.
  *
  * @param config - Optional configuration for scroll behavior
  * @returns Motionify scroll context value
@@ -412,33 +474,44 @@ export const useMotionifyContext = (): MotionifyContextValue => {
 export const useMotionify = (
   config: MotionifyConfig = {},
 ): MotionifyContextValue => {
-  const { threshold = DEFAULT_THRESHOLD, supportIdle = DEFAULT_SUPPORT_IDLE } =
-    config;
-  const context = useMotionifyContext();
+  const { threshold, supportIdle } = config;
+  const context = useMotionifyInternalContext();
+  const trackerRef = useRef(createScrollTracker());
+  const consumerConfig = useMemo<MotionifyConfig>(
+    () => ({ threshold, supportIdle }),
+    [supportIdle, threshold],
+  );
+  const { handleScroll } = context;
 
-  // Apply threshold configuration
-  useEffect(() => {
-    if (threshold !== undefined && threshold !== DEFAULT_THRESHOLD) {
-      context.setThreshold(threshold);
+  const configuredOnScroll = useCallback<ScrollEventHandler>(
+    (event) => {
+      handleScroll(event, trackerRef, consumerConfig);
+    },
+    [consumerConfig, handleScroll],
+  );
 
-      // Reset to default on cleanup
-      return () => {
-        context.setThreshold(DEFAULT_THRESHOLD);
-      };
-    }
-  }, [threshold, context]);
-
-  // Apply idle support configuration
-  useEffect(() => {
-    if (supportIdle !== undefined && supportIdle !== DEFAULT_SUPPORT_IDLE) {
-      context.setSupportIdle(supportIdle);
-
-      // Reset to default on cleanup
-      return () => {
-        context.setSupportIdle(DEFAULT_SUPPORT_IDLE);
-      };
-    }
-  }, [supportIdle, context]);
-
-  return context;
+  return useMemo<MotionifyContextValue>(
+    () => ({
+      scrollY: context.scrollY,
+      direction: context.direction,
+      directionShared: context.directionShared,
+      isScrolling: context.isScrolling,
+      onScroll: configuredOnScroll,
+      setThreshold: context.setThreshold,
+      setSupportIdle: context.setSupportIdle,
+      tabBar: context.tabBar,
+      tabBarOverride: context.tabBarOverride,
+    }),
+    [
+      configuredOnScroll,
+      context.direction,
+      context.directionShared,
+      context.isScrolling,
+      context.scrollY,
+      context.setSupportIdle,
+      context.setThreshold,
+      context.tabBar,
+      context.tabBarOverride,
+    ],
+  );
 };

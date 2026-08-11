@@ -19,7 +19,11 @@ import Animated, {
   type SharedValue,
   type WithTimingConfig,
 } from "react-native-reanimated";
-import { useMotionify } from "./MotionifyProvider";
+import {
+  useMotionify,
+  useMotionifyContext,
+  useMotionifySupportIdle,
+} from "./MotionifyProvider";
 import type { InterpolationConfig } from "./types";
 
 /**
@@ -132,7 +136,8 @@ export const MotionifyBottomTab: React.FC<MotionifyBottomTabProps> = ({
   currentId,
   ...restProps
 }) => {
-  const { directionShared, tabBarOverride } = useMotionify({ supportIdle });
+  const { directionShared, tabBarOverride } = useMotionifyContext();
+  useMotionifySupportIdle(supportIdle);
 
   // Track previous route ID to detect route changes
   const prevIdRef = useRef<string | undefined>(currentId);
