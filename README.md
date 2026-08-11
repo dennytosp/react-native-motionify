@@ -21,6 +21,20 @@ https://github.com/user-attachments/assets/133b5ddf-9a9a-48a1-9697-ab40de0534a1
 
 ---
 
+## Requirements
+
+| Package                   | Minimum  |
+| ------------------------- | -------- |
+| `react`                   | 16.8     |
+| `react-native`            | 0.60     |
+| `react-native-reanimated` | **3.16** |
+
+Reanimated 3.16 is the floor because the tab bar controls use
+`SharedValue.set()`, which was introduced in that release. Reanimated 4 is
+supported.
+
+---
+
 ## Installation
 
 ```bash
@@ -37,7 +51,7 @@ pnpm add react-native-motionify
 bun add react-native-motionify
 
 # peer deps
-npm install react-native-reanimated@^3.0.0
+npm install react-native-reanimated@">=3.16"
 ```
 
 Follow Reanimated 3 setup: `https://docs.swmansion.com/react-native-reanimated/docs/3.x/fundamentals/getting-started`.
@@ -128,7 +142,7 @@ const { onScroll } = useMotionify();
 
 ```tsx
 // LegendList example
-import { LegendList } from "legendapp-ui";
+import { LegendList } from "@legendapp/list";
 const { onScroll } = useMotionify();
 
 <LegendList

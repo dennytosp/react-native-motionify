@@ -14,9 +14,10 @@
  * - Fabric/New Architecture compatible
  * - Zero dependencies (except peer deps)
  *
+ * Requires react-native-reanimated 3.16 or newer.
+ *
  * @packageDocumentation
- * @version 2.0.0
- * @author React Native Motionify Scroll Team
+ * @author Phong Dinh (dennytosp)
  */
 
 // ============================================================================

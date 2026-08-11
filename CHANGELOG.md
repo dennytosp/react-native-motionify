@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Corrected the `react-native-reanimated` peer range to `>=3.16.0`. The tab bar
+  controls (`tabBar.show()` / `hide()` / `reset()`) call `SharedValue.set()`,
+  which was added in Reanimated 3.16 — on 3.0 through 3.15 the declared range
+  allowed an install that then threw `tabBarOverride.set is not a function` at
+  runtime.
+- The `LegendList` example in the README imported from `legendapp-ui`, which
+  does not exist on npm. The package is `@legendapp/list`.
+
+### Changed
+
+- Removed the deprecated `@types/react-native` devDependency (React Native has
+  shipped its own types since 0.71) and added `react`, `react-native`, and
+  `react-native-reanimated` as explicit devDependencies so type checking no
+  longer depends on the package manager auto-installing peers.
+
 ### Added
 
 - MIT `LICENSE` file (the package was already declared MIT in `package.json`).
