@@ -3,10 +3,9 @@ version: 2
 # Two pull requests per ecosystem at most, not one per dependency.
 #
 # Minor and patch updates travel together: they are routine, they either all
-# pass CI or the group tells you which one broke. Majors travel in a separate
-# group because that is where breaking changes live — TypeScript 7 removing
-# `moduleResolution=node10` should not be able to hold four harmless bumps
-# hostage in the same pull request.
+# pass CI or the group tells you which one broke. Major updates are ignored and
+# upgraded deliberately. Expo-managed versions are selected by `expo install`
+# instead of Dependabot so they stay aligned with the installed Expo SDK.
 #
 # Dependabot pull requests only update dependencies. They use the default skip
 # decision unless a maintainer explicitly adds a release label before merge.
@@ -28,7 +27,7 @@ updates:
         patterns: ["*"]
         update-types: ["major"]
 
-  - package-ecosystem: npm
+  - package-ecosystem: bun
     directory: /example
     schedule:
       interval: monthly
@@ -36,13 +35,73 @@ updates:
     labels: ["dependencies"]
     commit-message:
       prefix: "chore(example-deps)"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@expo/*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "expo*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "eslint-config-expo"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "@react-native-async-storage/async-storage"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "react"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "react-dom"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "react-native"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "react-native-bootsplash"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "react-native-gesture-handler"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "react-native-reanimated"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "react-native-safe-area-context"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "react-native-screens"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "react-native-svg"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "react-native-web"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "react-native-worklets"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
     groups:
       example:
         patterns: ["*"]
         update-types: ["minor", "patch"]
-      example-major:
-        patterns: ["*"]
-        update-types: ["major"]
 
   - package-ecosystem: github-actions
     directory: /

@@ -6,7 +6,7 @@ const appId = "com.denny.taskify";
 const appScheme = "taskify";
 const appSlug = "taskify";
 const buildNumber = 1;
-const deploymentTarget = "16.0";
+const deploymentTarget = "16.4";
 const plugins: ExpoConfig["plugins"] = [];
 
 const appIcon = {
