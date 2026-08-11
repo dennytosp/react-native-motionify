@@ -246,7 +246,7 @@ Notes:
 
 `<MotionifyProvider threshold={8} supportIdle={false}>`
 
-- **threshold**: number — pixels to switch direction
+- **threshold**: number — pixels that must be exceeded to switch direction
 - **supportIdle**: boolean — emit `idle` after inactivity
 
 ### Hook
@@ -265,6 +265,20 @@ Returns:
 - **tabBar**: Tab bar visibility controls (see below)
 
 Optional config: `{ threshold?: number; supportIdle?: boolean }`
+
+Hook configuration is scoped to the returned `onScroll` handler. This lets
+multiple mounted screens use different settings without overwriting each
+other. Omitted values inherit the provider configuration; `setThreshold` and
+`setSupportIdle` remain available when you intentionally want to change the
+provider-wide defaults.
+
+```tsx
+const feed = useMotionify({ threshold: 24 });
+const search = useMotionify({ threshold: 12, supportIdle: true });
+
+<FlatList onScroll={feed.onScroll} scrollEventThrottle={16} />;
+<ScrollView onScroll={search.onScroll} scrollEventThrottle={16} />;
+```
 
 #### Tab Bar Controls
 
@@ -482,6 +496,8 @@ Notes:
 ## Performance
 
 - Use `scrollEventThrottle={16}`
+- Direction detection runs in the React Native JS scroll handler; Reanimated
+  SharedValues keep the resulting animations on the UI thread.
 - Keep worklets light; precompute heavy values
 - Prefer interpolation for smoother motion
 - Use `LegendList`, `FlashList` or `FlatList` for long content

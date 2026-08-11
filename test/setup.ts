@@ -1,4 +1,5 @@
 import { mock } from "bun:test";
+import { useRef } from "react";
 
 /**
  * `react-native-reanimated` pulls in the React Native runtime, which cannot be
@@ -11,5 +12,18 @@ mock.module("react-native-reanimated", () => ({
     CLAMP: "clamp",
     EXTEND: "extend",
     IDENTITY: "identity",
+  },
+  useSharedValue: <T>(initialValue: T) => {
+    const sharedValue = useRef({
+      value: initialValue,
+      get() {
+        return this.value;
+      },
+      set(value: T) {
+        this.value = value;
+      },
+    });
+
+    return sharedValue.current;
   },
 }));

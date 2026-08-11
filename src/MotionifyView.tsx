@@ -19,7 +19,11 @@ import Animated, {
   type WithTimingConfig,
   type EasingFunction,
 } from "react-native-reanimated";
-import { useMotionify } from "./MotionifyProvider";
+import {
+  useMotionify,
+  useMotionifyContext,
+  useMotionifySupportIdle,
+} from "./MotionifyProvider";
 import type { Direction, InterpolationConfig, TransformStyle } from "./types";
 
 /**
@@ -139,7 +143,8 @@ export const MotionifyView: React.FC<MotionifyViewProps> = ({
   easing,
   ...restProps
 }) => {
-  const { directionShared } = useMotionify({ supportIdle });
+  const { directionShared } = useMotionifyContext();
+  useMotionifySupportIdle(supportIdle);
 
   const animatedStyle = useAnimatedStyle(() => {
     "worklet";

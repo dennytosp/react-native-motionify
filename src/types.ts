@@ -32,6 +32,7 @@ export interface MotionifyConfig {
   /**
    * Minimum scroll delta required to trigger direction change (in pixels)
    * Higher values make direction changes less sensitive
+   * Scoped to the scroll handler returned by this hook invocation
    * @default 8
    */
   threshold?: number;
@@ -39,6 +40,7 @@ export interface MotionifyConfig {
   /**
    * Enable 'idle' direction state when user stops scrolling
    * When enabled, direction becomes 'idle' after 200ms of no scrolling
+   * Scoped to the scroll handler returned by this hook invocation
    * @default false
    */
   supportIdle?: boolean;

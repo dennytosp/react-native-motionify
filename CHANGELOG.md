@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Apply the configured direction threshold symmetrically to upward and
+  downward scrolling.
+- Scope `useMotionify({ threshold, supportIdle })` to the hook's returned
+  scroll handler so multiple mounted screens no longer overwrite provider
+  configuration or churn effects during scrolling.
+
 ### Changed
 
 - Dependabot updates now skip npm publishing by default. Explicit package
