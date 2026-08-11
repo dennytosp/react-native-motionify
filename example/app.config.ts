@@ -35,7 +35,6 @@ export default (config: ExpoConfig): ExpoConfig => ({
   icon: appIcon.default.icon,
   scheme: appScheme,
   userInterfaceStyle: "automatic",
-  newArchEnabled: true,
   runtimeVersion: appVersion,
   ios: {
     icon: {
@@ -64,7 +63,6 @@ export default (config: ExpoConfig): ExpoConfig => ({
       backgroundImage: "./assets/images/android-icon-background.png",
       monochromeImage: "./assets/images/android-icon-monochrome.png",
     },
-    edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: appId,
     versionCode: buildNumber,
