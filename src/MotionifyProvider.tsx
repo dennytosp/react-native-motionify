@@ -216,7 +216,7 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
       const totalDelta = clampedY - scrollStartYRef.current;
       let newDirection: Direction | null = null;
 
-      if (totalDelta > 0) {
+      if (totalDelta > thresholdRef.current) {
         newDirection = "down";
       } else if (totalDelta < -thresholdRef.current) {
         newDirection = "up";
