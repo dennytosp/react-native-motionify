@@ -99,9 +99,10 @@ When contributing to animated code paths:
 
 ## Releasing
 
-Merging a pull request into `main` publishes automatically when its version was
-bumped. The default decision is patch when no `release:*` label is present;
-use `release:minor`, `release:major`, or `release:skip` to override it.
+Source pull requests never bump their own version. After a merge into `main`,
+the default decision is patch when no `release:*` label is present; use
+`release:minor`, `release:major`, or `release:skip` to override it. Automation
+then prepares a separate `release/next` pull request whose merge publishes.
 
 Read [RELEASING.md](./RELEASING.md) for the complete rules and copy-pasteable
 `gh` commands for creating, applying, changing, and verifying release labels.

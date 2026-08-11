@@ -5,7 +5,8 @@ messages do not determine the version.
 
 ## Release decisions
 
-Choose exactly one release decision for every pull request targeting `main`:
+Choose exactly one release decision for every source pull request targeting
+`main`:
 
 | Decision | Pull request label | `1.2.3` becomes | Use for |
 | --- | --- | --- | --- |
@@ -16,9 +17,9 @@ Choose exactly one release decision for every pull request targeting `main`:
 
 Patch is the default. There is intentionally no `release:patch` label.
 
-Only one `release:*` label should be present. `release:skip` prevents the bump
-job, and `release:major` takes precedence over `release:minor` if conflicting
-labels are accidentally applied.
+Only one `release:*` label should be present. `release:skip` excludes the
+merged pull request from the next release, and `release:major` takes precedence
+over `release:minor` if conflicting labels are accidentally applied.
 
 ## One-time label setup
 
@@ -112,31 +113,34 @@ Interpret the output as follows:
 
 ## What automation does
 
-The bump workflow runs when a pull request targeting `main` is opened,
-updated, reopened, labeled, or unlabeled. It calculates the next version from
-the version currently on `main`, updates `package.json`, promotes the
-`Unreleased` CHANGELOG section, and commits the result to the pull request
-branch.
+Source pull requests run CI without changing `package.json` or `CHANGELOG.md`.
+The release decision is read only after a pull request has been merged into
+`main`.
 
-Changing the label is safe. The workflow removes its previous bump before
-recalculating, so switching from minor to major and back to minor does not bump
-the version multiple times.
+After a non-skipped merge, the Prepare release workflow examines every merged
+change since the latest `v*` tag. It uses the highest requested decision —
+major, then minor, then patch — and creates or refreshes a single
+`release/next` pull request from the latest `main`. That release pull request
+contains the version and CHANGELOG commit and carries `release:skip` so it
+cannot recursively prepare another release.
 
-After the pull request is merged, the release workflow compares the version in
-`package.json` with npm. An unpublished version is verified, published with
-provenance, tagged as `v<version>`, and used to create a GitHub Release. An
-already-published version is skipped successfully.
+The workflow dispatches CI explicitly on `release/next`. After those checks
+pass, merge the release pull request. Its merge is the first time the new
+version appears on `main`.
+
+The Release workflow then verifies the code, publishes to npm with provenance,
+tags `v<version>`, and creates the GitHub Release. An already-published version
+is skipped successfully.
 
 ## Operational notes
 
-- A pull request with `release:skip` does not receive a bump commit, and its
-  `Bump version` job is expected to show as skipped.
-- The bot cannot write a bump commit to a pull request branch in a fork. A
-  maintainer must handle the version after merge or move the branch into this
-  repository.
-- A push made by the bump workflow's `GITHUB_TOKEN` does not run CI normally.
-  To require a green check on the exact bot-authored bump commit, approve the
-  parked **CI** run in the Actions tab. Do not approve the parked
-  **Bump version** run.
+- `release:skip` pull requests are ignored when the next version is selected.
+- Dependency updates for the published package use patch by default. Updates
+  confined to `/example` carry `release:skip` because the example app is not
+  included in the npm package.
+- This repository currently requires a maintainer to merge `release/next`
+  after CI passes; repository auto-merge is disabled.
+- If the version on `main` differs from the latest `v*` tag, release
+  preparation stops instead of skipping over an incomplete publication.
 - npm publishing requires the configured trusted publisher or an `NPM_TOKEN`
   repository secret.
