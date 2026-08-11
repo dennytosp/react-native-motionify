@@ -8,9 +8,8 @@ version: 2
 # `moduleResolution=node10` should not be able to hold four harmless bumps
 # hostage in the same pull request.
 #
-# Published-package and workflow dependencies request a patch release. The
-# example app is not shipped to npm, so its updates have no release label and
-# use the default skip decision.
+# Dependabot pull requests only update dependencies. They use the default skip
+# decision unless a maintainer explicitly adds a release label before merge.
 
 updates:
   - package-ecosystem: npm
@@ -18,7 +17,7 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
-    labels: ["dependencies", "release:patch"]
+    labels: ["dependencies"]
     commit-message:
       prefix: "chore(deps)"
     groups:
@@ -49,7 +48,7 @@ updates:
     directory: /
     schedule:
       interval: weekly
-    labels: ["dependencies", "release:patch"]
+    labels: ["dependencies"]
     commit-message:
       prefix: "chore(ci)"
     groups:
