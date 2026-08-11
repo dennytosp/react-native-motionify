@@ -7,7 +7,8 @@
 [![TypeScript](https://img.shields.io/badge/types-included-blue.svg)](./src/types.ts)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
-A lightweight, production-ready toolkit for smooth, scroll-driven UI with Reanimated 3.
+A lightweight, production-ready toolkit for smooth, scroll-driven UI with
+Reanimated 3.16+ and 4.
 
 - **UI-thread animations** at 60 FPS
 - **Automatic direction detection** with threshold
@@ -50,11 +51,14 @@ pnpm add react-native-motionify
 # bun
 bun add react-native-motionify
 
-# peer deps
+# peer dependency
 npm install react-native-reanimated@">=3.16"
 ```
 
-Follow Reanimated 3 setup: `https://docs.swmansion.com/react-native-reanimated/docs/3.x/fundamentals/getting-started`.
+Follow the setup guide for your installed Reanimated major version:
+
+- [Reanimated 4 setup](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/) for New Architecture apps. Reanimated 4 also requires `react-native-worklets`.
+- [Reanimated 3 setup](https://docs.swmansion.com/react-native-reanimated/docs/3.x/fundamentals/getting-started/) for apps that still use the Legacy Architecture.
 
 ---
 
@@ -345,7 +349,7 @@ function HomeScreen() {
 - `DEFAULTS`: threshold, durations, idle timeout, throttle
 - `TRANSLATION_PRESETS`: common ranges (e.g., `BOTTOM_TAB`, `FAB_*`, `HEADER`)
 - `INTERPOLATION_PRESETS`: fade/scale/parallax/rotate/sticky presets
-- Helpers: `createInterpolation`, `createFadeInterpolation`, `createScaleInterpolation`, `createParallaxInterpolation`, `createRotationInterpolation`, `clamp`, `lerp`, `mapRange`
+- Helpers: `createTranslationRange`, `createInterpolation`, `createFadeInterpolation`, `createScaleInterpolation`, `createParallaxInterpolation`, `createRotationInterpolation`, `clamp`, `lerp`, `mapRange`
 
 ---
 
@@ -513,13 +517,16 @@ git clone https://github.com/dennytosp/react-native-motionify.git
 cd react-native-motionify
 bun install
 
-bun run typecheck   # tsc --noEmit over src/ and test/
-bun test            # unit tests for the pure helpers
-bun run build       # tsc -> lib/
+bun run format:check
+bun run lint
+bun run typecheck
+bun test
+bun run build
+npm pack --dry-run
 ```
 
-These three commands are exactly what CI runs on every pull request. See
-[CONTRIBUTING.md](./CONTRIBUTING.md) for the full guide, and
+CI also validates the Expo example dependency versions and runs Expo Doctor.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full guide, and
 [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for community expectations.
 
 - Found a bug? [Open an issue](https://github.com/dennytosp/react-native-motionify/issues/new?template=bug_report.yml)
