@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-08-11
+
 ### Fixed
 
 - Apply the configured direction threshold symmetrically to upward and
@@ -95,7 +97,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `MotionifyBottomTabWithInterpolation`, plus translation and interpolation
   presets and helper utilities.
 
-[unreleased]: https://github.com/dennytosp/react-native-motionify/compare/v1.0.4...HEAD
+[unreleased]: https://github.com/dennytosp/react-native-motionify/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/dennytosp/react-native-motionify/compare/v1.0.4...v1.1.0
 [1.0.4]: https://github.com/dennytosp/react-native-motionify/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/dennytosp/react-native-motionify/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/dennytosp/react-native-motionify/compare/v1.0.1...v1.0.2
