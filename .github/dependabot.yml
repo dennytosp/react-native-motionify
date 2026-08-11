@@ -8,9 +8,9 @@ version: 2
 # `moduleResolution=node10` should not be able to hold four harmless bumps
 # hostage in the same pull request.
 #
-# Published-package and workflow dependencies use the default patch release
-# when they pass CI. The example app is not shipped to npm, so its updates are
-# marked `release:skip`.
+# Published-package and workflow dependencies request a patch release. The
+# example app is not shipped to npm, so its updates have no release label and
+# use the default skip decision.
 
 updates:
   - package-ecosystem: npm
@@ -18,7 +18,7 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
-    labels: ["dependencies"]
+    labels: ["dependencies", "release:patch"]
     commit-message:
       prefix: "chore(deps)"
     groups:
@@ -34,7 +34,7 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 3
-    labels: ["dependencies", "release:skip"]
+    labels: ["dependencies"]
     commit-message:
       prefix: "chore(example-deps)"
     groups:
@@ -49,7 +49,7 @@ updates:
     directory: /
     schedule:
       interval: weekly
-    labels: ["dependencies"]
+    labels: ["dependencies", "release:patch"]
     commit-message:
       prefix: "chore(ci)"
     groups:
