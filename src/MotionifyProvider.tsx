@@ -266,7 +266,9 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
   /**
    * Tab bar visibility controls
    * Programmatically control tab bar show/hide/reset
-   * Uses Reanimated v4 .set() API for React Compiler compatibility
+   *
+   * Uses SharedValue.set() for React Compiler compatibility. That method was
+   * added in Reanimated 3.16, which is why it is the minimum peer version.
    */
   const showTabBar = useCallback(() => {
     tabBarOverride.set("show");

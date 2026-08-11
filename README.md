@@ -1,5 +1,12 @@
 ## React Native Motionify
 
+[![CI](https://github.com/dennytosp/react-native-motionify/actions/workflows/ci.yml/badge.svg)](https://github.com/dennytosp/react-native-motionify/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/react-native-motionify.svg)](https://www.npmjs.com/package/react-native-motionify)
+[![npm downloads](https://img.shields.io/npm/dm/react-native-motionify.svg)](https://www.npmjs.com/package/react-native-motionify)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![TypeScript](https://img.shields.io/badge/types-included-blue.svg)](./src/types.ts)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
+
 A lightweight, production-ready toolkit for smooth, scroll-driven UI with Reanimated 3.
 
 - **UI-thread animations** at 60 FPS
@@ -11,6 +18,20 @@ A lightweight, production-ready toolkit for smooth, scroll-driven UI with Reanim
 ---
 
 https://github.com/user-attachments/assets/133b5ddf-9a9a-48a1-9697-ab40de0534a1
+
+---
+
+## Requirements
+
+| Package                   | Minimum  |
+| ------------------------- | -------- |
+| `react`                   | 16.8     |
+| `react-native`            | 0.60     |
+| `react-native-reanimated` | **3.16** |
+
+Reanimated 3.16 is the floor because the tab bar controls use
+`SharedValue.set()`, which was introduced in that release. Reanimated 4 is
+supported.
 
 ---
 
@@ -30,7 +51,7 @@ pnpm add react-native-motionify
 bun add react-native-motionify
 
 # peer deps
-npm install react-native-reanimated@^3.0.0
+npm install react-native-reanimated@">=3.16"
 ```
 
 Follow Reanimated 3 setup: `https://docs.swmansion.com/react-native-reanimated/docs/3.x/fundamentals/getting-started`.
@@ -121,7 +142,7 @@ const { onScroll } = useMotionify();
 
 ```tsx
 // LegendList example
-import { LegendList } from "legendapp-ui";
+import { LegendList } from "@legendapp/list";
 const { onScroll } = useMotionify();
 
 <LegendList
@@ -469,14 +490,34 @@ Notes:
 
 ## Contributing
 
-To contribute to this library:
+Contributions are welcome — bug reports, docs fixes, and new presets especially.
 
-1. Make changes to the implementation in `react-native-motionify`.
-2. Test with various build configurations.
-3. Submit pull requests with clear descriptions of changes and benefits.
+```bash
+git clone https://github.com/dennytosp/react-native-motionify.git
+cd react-native-motionify
+bun install
+
+bun run typecheck   # tsc --noEmit over src/ and test/
+bun test            # unit tests for the pure helpers
+bun run build       # tsc -> lib/
+```
+
+These three commands are exactly what CI runs on every pull request. See
+[CONTRIBUTING.md](./CONTRIBUTING.md) for the full guide, and
+[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) for community expectations.
+
+- Found a bug? [Open an issue](https://github.com/dennytosp/react-native-motionify/issues/new?template=bug_report.yml)
+- Have a usage question? [Start a discussion](https://github.com/dennytosp/react-native-motionify/discussions)
+- Found a security problem? See [SECURITY.md](./SECURITY.md) — please do not open a public issue
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md).
 
 ---
 
 ## License
 
-MIT
+[MIT](./LICENSE) © Phong Dinh
