@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `tsconfig.json` used `moduleResolution: node`, which TypeScript 7 removes
+  outright (`TS5108`). It is now `bundler`, which is what Metro actually does.
+  The emitted `lib/` is byte-for-byte unchanged.
+- `scrollTimeoutRef` was typed `NodeJS.Timeout`. React Native has no `NodeJS`
+  namespace and its `setTimeout` returns a number; the type is now
+  `ReturnType<typeof setTimeout>`.
 - Corrected the `react-native-reanimated` peer range to `>=3.16.0`. The tab bar
   controls (`tabBar.show()` / `hide()` / `reset()`) call `SharedValue.set()`,
   which was added in Reanimated 3.16 — on 3.0 through 3.15 the declared range
@@ -30,10 +36,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Continuous integration: typecheck, unit tests, build, and package verification
   on every push and pull request.
 - Unit tests for the pure helpers in `src/utils.ts`.
-- Release workflow: bumping the version in `package.json` and merging to `main`
+- Label-driven releases. A pull request labelled `release:minor` /
+  `release:major` (or left unlabelled, for a patch) gets its version and
+  CHANGELOG section written into the branch before merge; merging then
   publishes to npm with provenance, pushes the `v<version>` tag, and opens a
-  GitHub Release from this file. Pushes that do not change the version are
-  skipped.
+  GitHub Release from this file. `release:skip` publishes nothing.
 - `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, issue and pull request
   templates, and Dependabot configuration.
 
