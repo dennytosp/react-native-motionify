@@ -161,7 +161,7 @@ export const MotionifyView: React.FC<MotionifyViewProps> = ({
       const shouldHide = directionShared.value === hideOn;
       const translateY = withTiming(
         shouldHide ? translateRange.to : translateRange.from,
-        timingConfig
+        timingConfig,
       );
       transform.push({ translateY });
     }
@@ -209,8 +209,10 @@ export const MotionifyView: React.FC<MotionifyViewProps> = ({
 /**
  * Props for MotionifyViewWithInterpolation component
  */
-export interface MotionifyViewWithInterpolationProps
-  extends Omit<ViewProps, "style"> {
+export interface MotionifyViewWithInterpolationProps extends Omit<
+  ViewProps,
+  "style"
+> {
   /**
    * Child components to render inside the animated view
    */
@@ -336,7 +338,7 @@ export const MotionifyViewWithInterpolation: React.FC<
         scrollValue.value,
         inputRange,
         outputRange as number[],
-        extrapolate ?? Extrapolation.CLAMP
+        extrapolate ?? Extrapolation.CLAMP,
       );
     }
 
@@ -349,7 +351,7 @@ export const MotionifyViewWithInterpolation: React.FC<
           scrollValue.value,
           inputRange,
           outputRange as number[],
-          extrapolate ?? Extrapolation.CLAMP
+          extrapolate ?? Extrapolation.CLAMP,
         ),
       });
     }
@@ -363,7 +365,7 @@ export const MotionifyViewWithInterpolation: React.FC<
           scrollValue.value,
           inputRange,
           outputRange as number[],
-          extrapolate ?? Extrapolation.CLAMP
+          extrapolate ?? Extrapolation.CLAMP,
         ),
       });
     }
@@ -376,7 +378,7 @@ export const MotionifyViewWithInterpolation: React.FC<
           scrollValue.value,
           inputRange,
           outputRange as number[],
-          extrapolate ?? Extrapolation.CLAMP
+          extrapolate ?? Extrapolation.CLAMP,
         ),
       });
     }
@@ -389,7 +391,7 @@ export const MotionifyViewWithInterpolation: React.FC<
           scrollValue.value,
           inputRange,
           outputRange as number[],
-          extrapolate ?? Extrapolation.CLAMP
+          extrapolate ?? Extrapolation.CLAMP,
         ),
       });
     }
@@ -402,7 +404,7 @@ export const MotionifyViewWithInterpolation: React.FC<
           scrollValue.value,
           inputRange,
           outputRange as number[],
-          extrapolate ?? Extrapolation.CLAMP
+          extrapolate ?? Extrapolation.CLAMP,
         ),
       });
     }
@@ -414,7 +416,7 @@ export const MotionifyViewWithInterpolation: React.FC<
         scrollValue.value,
         inputRange,
         outputRange as number[],
-        extrapolate ?? Extrapolation.CLAMP
+        extrapolate ?? Extrapolation.CLAMP,
       );
       transform.push({ rotate: `${rotateValue}deg` });
     }

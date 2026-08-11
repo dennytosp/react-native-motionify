@@ -45,7 +45,7 @@ function main() {
   fs.writeFileSync(
     packageJsonPath,
     JSON.stringify(pkg, null, 2) + "\n",
-    "utf8"
+    "utf8",
   );
 
   console.log(`Version bumped: ${currentVersion} -> ${nextVersion}`);
