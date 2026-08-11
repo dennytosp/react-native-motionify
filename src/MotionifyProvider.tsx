@@ -114,7 +114,9 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
   const previousYRef = useRef(0);
   const scrollStartYRef = useRef(0);
   const isUserScrollingRef = useRef(false);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // `ReturnType<typeof setTimeout>` rather than `NodeJS.Timeout`: React Native
+  // has no NodeJS namespace, and its setTimeout returns a number.
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const thresholdRef = useRef(threshold);
   const supportIdleRef = useRef(supportIdle);
 
