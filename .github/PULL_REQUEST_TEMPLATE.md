@@ -18,6 +18,15 @@
 
 <!-- iOS / Android, New Architecture or Paper, Reanimated version. -->
 
+## Release decision
+
+<!-- Select exactly one. See RELEASING.md for the label commands. -->
+
+- [ ] Patch — no `release:*` label
+- [ ] Minor — `release:minor`
+- [ ] Major — `release:major`
+- [ ] Skip npm release — `release:skip`
+
 ## Notes for reviewers
 
 <!-- Anything surprising: a worklet that had to stay on the UI thread, a
