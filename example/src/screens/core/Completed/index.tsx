@@ -1,5 +1,5 @@
 import { RoutesMainStack, RoutesRootStack } from "@/navigators/routes";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "expo-router/react-navigation";
 import React, { useCallback, useState } from "react";
 import { FlatList, TextInput, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";

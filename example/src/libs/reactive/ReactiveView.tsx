@@ -152,7 +152,7 @@ export const ReactiveView: React.FC<ReactiveViewProps> = ({
     directionShared,
   ]);
 
-  const combinedStyle: StyleProp<ViewStyle> = [style, animatedStyle];
+  const combinedStyle = [style, animatedStyle];
 
   return (
     <Animated.View

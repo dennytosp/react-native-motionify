@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "expo-router/react-navigation";
 
 import { Button, Image, Input } from '@/components';
 import { InputRef } from '@/components/Input/type';

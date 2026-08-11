@@ -1,5 +1,5 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@/navigators/native-stack';
 import { RoutesMainStack } from '../routes';
 import { EnterCategory, EnterTaskify, Taskify } from '@/screens';
 import { CategoryResponseModel, TaskResponseModel } from '@/api/types';

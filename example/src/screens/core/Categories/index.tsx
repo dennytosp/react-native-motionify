@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "expo-router/react-navigation";
 import { PayloadAction } from "@reduxjs/toolkit";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, TextInput, TouchableOpacity, View } from "react-native";

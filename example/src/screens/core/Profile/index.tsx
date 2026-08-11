@@ -1,7 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import React, { useRef } from "react";
+import React from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import Animated, {
+  Extrapolation,
+  useAnimatedRef,
+  useScrollOffset,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AppStyles } from "@/styles";
@@ -16,7 +21,8 @@ import { styles } from "./style";
 
 const Profile = () => {
   const insets = useSafeAreaInsets();
-  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollViewRef = useAnimatedRef<ScrollView>();
+  const nativeScrollOffset = useScrollOffset(scrollViewRef);
 
   const { direction, onScroll, isScrolling } = useMotionify({
     threshold: 30,
@@ -53,7 +59,7 @@ const Profile = () => {
         </View>
       </MotionifyView>
 
-      <ScrollView
+      <Animated.ScrollView
         ref={scrollViewRef}
         onScroll={onScroll}
         scrollEventThrottle={16}
@@ -374,16 +380,32 @@ const Profile = () => {
         </MotionifyViewWithInterpolation>
 
         <View style={{ height: scale(40) }} />
-      </ScrollView>
+      </Animated.ScrollView>
 
       <MotionifyViewWithInterpolation
+        value={nativeScrollOffset}
         style={[styles.fab, { bottom: scale(120) }]}
         interpolations={{
-          opacity: { inputRange: [0, 150, 300], outputRange: [0, 0.3, 1] },
-          scale: { inputRange: [0, 120, 300], outputRange: [0.4, 0.8, 1] },
+          opacity: {
+            inputRange: [80, 170, 260],
+            outputRange: [0, 0.65, 1],
+            extrapolate: Extrapolation.CLAMP,
+          },
+          scale: {
+            inputRange: [80, 170, 260],
+            outputRange: [0.7, 0.9, 1],
+            extrapolate: Extrapolation.CLAMP,
+          },
+          translateY: {
+            inputRange: [80, 260],
+            outputRange: [12, 0],
+            extrapolate: Extrapolation.CLAMP,
+          },
         }}
       >
         <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Scroll to top"
           style={styles.fabButton}
           onPress={handleScrollToTop}
           hitSlop={12}

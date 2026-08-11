@@ -14,7 +14,7 @@ interface InputProps {
   containerStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
-  inputStyle?: StyleProp<ViewStyle>;
+  inputStyle?: StyleProp<TextStyle>;
   defaultValue?: string;
   isRequired?: boolean;
   isPickerImage?: boolean;

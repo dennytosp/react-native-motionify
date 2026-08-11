@@ -1,4 +1,4 @@
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { BottomTabBarProps } from "expo-router/js-tabs";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
@@ -150,7 +150,9 @@ const MotionifyBottomTabBar = (props: MotionifyBottomTabBarProps) => {
                 key={"bottom-tab-" + route.key}
                 accessibilityRole="button"
                 accessibilityState={isFocused ? { selected: true } : {}}
-                accessibilityLabel={options.tabBarAccessibilityLabel}
+                accessibilityLabel={
+                  options.tabBarAccessibilityLabel ?? String(label)
+                }
                 onPress={onPress}
                 onLongPress={onLongPress}
                 style={[
@@ -195,7 +197,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   tabContainer: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   tabItem: {
     borderTopLeftRadius: 44,

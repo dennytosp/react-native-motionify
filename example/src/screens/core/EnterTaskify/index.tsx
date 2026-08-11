@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from "expo-router/react-navigation";
 
 import { getCategories } from '@/api/services/category';
 import { getTasks, postAddTask, putUpdateTask } from '@/api/services/task';

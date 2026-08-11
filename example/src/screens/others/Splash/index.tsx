@@ -1,60 +1,58 @@
-import { useCallback, useState } from 'react';
-import { Animated, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Animated } from 'react-native';
 import AnimatedBootSplash from 'react-native-bootsplash';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { translate } from '@/translations/translate';
-import { isIos } from '@/utils/device';
-import { moderateScale } from '@/utils/scale';
 import { styles } from './style';
 
 type Props = {
+  ready: boolean;
   onAnimationEnd: () => void;
 };
 
-const Splash = ({ onAnimationEnd }: Props) => {
-  const { bottom } = useSafeAreaInsets();
-  const [opacity] = useState(() => new Animated.Value(1));
-  const [translateY] = useState(() => new Animated.Value(0));
+const Splash = ({ ready, onAnimationEnd }: Props) => {
+  const [contentOpacity] = useState(() => new Animated.Value(1));
+  const [nativeSplashHidden, setNativeSplashHidden] = useState(false);
 
   const { container, logo } = AnimatedBootSplash.useHideAnimation({
-    manifest: require('@/assets/icons/bootsplash_logo/bootsplash_manifest.json'),
-    logo: require('@/assets/icons/bootsplash_logo/bootsplash_logo.png'),
+    manifest: require('@/assets/bootsplash/manifest.json'),
+    logo: require('@/assets/bootsplash/logo.png'),
 
     statusBarTranslucent: true,
     navigationBarTranslucent: false,
 
     animate: () => {
-      onRunAnimation();
+      setNativeSplashHidden(true);
     },
   });
 
-  const onRunAnimation = useCallback(() => {
-    Animated.timing(opacity, {
+  useEffect(() => {
+    if (!nativeSplashHidden || !ready) {
+      return;
+    }
+
+    const animation = Animated.timing(contentOpacity, {
       useNativeDriver: true,
       toValue: 0,
       duration: 150,
-      delay: 1000,
-    }).start(() => onAnimationEnd());
-  }, []);
+    });
+
+    animation.start(({ finished }) => {
+      if (finished) {
+        onAnimationEnd();
+      }
+    });
+
+    return () => animation.stop();
+  }, [contentOpacity, nativeSplashHidden, onAnimationEnd, ready]);
 
   return (
     <Animated.View
       {...container}
-      style={[container.style, { opacity, flex: 1 }]}>
+      style={[container.style, styles.container]}>
       <Animated.Image
         {...logo}
-        style={[logo.style, { transform: [{ translateY }] }]}
+        style={[logo.style, { opacity: contentOpacity }]}
       />
-
-      <View
-        style={[
-          { position: 'absolute', bottom: isIos ? bottom : moderateScale(32) },
-        ]}>
-        <Text style={[styles.textLogo]}>
-          {translate('app.name').toUpperCase()}
-        </Text>
-      </View>
     </Animated.View>
   );
 };

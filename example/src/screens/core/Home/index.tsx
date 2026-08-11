@@ -1,5 +1,5 @@
 import { RoutesMainStack, RoutesRootStack } from "@/navigators/routes";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "expo-router/react-navigation";
 import moment from "moment";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {

@@ -16,7 +16,7 @@ const Indicator = memo((props: IndicatorProps) => {
   if (visible) {
     return (
       <ActivityIndicator
-        style={[StyleSheet.absoluteFillObject, AppStyles.columnCenter]}
+        style={[StyleSheet.absoluteFill, AppStyles.columnCenter]}
         color={COLORS.primary}
         size="small"
       />

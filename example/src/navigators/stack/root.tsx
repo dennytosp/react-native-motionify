@@ -1,6 +1,6 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigatorScreenParams } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@/navigators/native-stack';
+import { NavigatorScreenParams } from 'expo-router/react-navigation';
 
 import { getAppState } from '@/stores/slices';
 import { useAppSelector } from '@/stores/types';
@@ -24,7 +24,7 @@ export type RootStackParamList = {
     | undefined;
 };
 
-const Root = createNativeStackNavigator<ReactNavigation.RootParamList>();
+const Root = createNativeStackNavigator<RootStackParamList>();
 
 const RootStack = () => {
   const { isFirstTimeLaunch } = useAppSelector(getAppState);

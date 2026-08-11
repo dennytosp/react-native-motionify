@@ -76,7 +76,15 @@ export default (config: ExpoConfig): ExpoConfig => ({
   },
   plugins: [
     "expo-router",
-    ["react-native-bootsplash", { assetsDir: "./assets/bootsplash" }],
+    [
+      "react-native-bootsplash",
+      {
+        logo: "./assets/icons/logo/logo.png",
+        background: "#FAFAFA",
+        logoWidth: 110,
+        assetsOutput: "./assets/bootsplash",
+      },
+    ],
     [
       "expo-build-properties",
       {
