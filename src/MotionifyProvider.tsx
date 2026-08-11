@@ -102,7 +102,7 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
   // Reanimated shared values (UI thread)
   const scrollY = useSharedValue(0);
   const directionShared = useSharedValue<Direction>("idle");
-  const tabBarOverride = useSharedValue<'show' | 'hide' | 'none'>("none");
+  const tabBarOverride = useSharedValue<"show" | "hide" | "none">("none");
 
   // React state (JS thread)
   const [direction, setDirection] = useState<Direction>("idle");
@@ -228,7 +228,7 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
       if (newDirection && newDirection !== directionShared.value) {
         directionShared.value = newDirection;
         runOnJS(updateDirection)(newDirection);
-        
+
         // Reset tab bar override when scroll direction changes
         // This allows scroll-based behavior to resume after programmatic control
         if (tabBarOverride.value !== "none") {
@@ -246,7 +246,7 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
       resetScrollTimeout,
       updateDirection,
       updateIsScrolling,
-    ]
+    ],
   );
 
   /**
@@ -290,7 +290,7 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
       hide: hideTabBar,
       reset: resetTabBar,
     }),
-    [showTabBar, hideTabBar, resetTabBar]
+    [showTabBar, hideTabBar, resetTabBar],
   );
 
   /**
@@ -318,7 +318,7 @@ export const MotionifyProvider: React.FC<MotionifyProviderProps> = ({
       setSupportIdle,
       tabBarControls,
       tabBarOverride,
-    ]
+    ],
   );
 
   // Cleanup timeout on unmount
@@ -364,7 +364,7 @@ export const useMotionifyContext = (): MotionifyContextValue => {
   if (!context) {
     throw new Error(
       "useMotionifyContext must be used within a MotionifyProvider. " +
-        "Wrap your component tree with <MotionifyProvider>."
+        "Wrap your component tree with <MotionifyProvider>.",
     );
   }
 
@@ -410,7 +410,7 @@ export const useMotionifyContext = (): MotionifyContextValue => {
  * ```
  */
 export const useMotionify = (
-  config: MotionifyConfig = {}
+  config: MotionifyConfig = {},
 ): MotionifyContextValue => {
   const { threshold = DEFAULT_THRESHOLD, supportIdle = DEFAULT_SUPPORT_IDLE } =
     config;

@@ -22,7 +22,7 @@ export type Direction = "up" | "down" | "idle";
  * Scroll event handler type for React Native scroll components
  */
 export type ScrollEventHandler = (
-  event: NativeSyntheticEvent<NativeScrollEvent>
+  event: NativeSyntheticEvent<NativeScrollEvent>,
 ) => void;
 
 /**
@@ -176,7 +176,7 @@ export interface MotionifyContextValue {
    * Shared value for tab bar visibility override
    * @internal
    */
-  tabBarOverride: SharedValue<'show' | 'hide' | 'none'>;
+  tabBarOverride: SharedValue<"show" | "hide" | "none">;
 }
 
 /**

@@ -202,7 +202,7 @@ export const INTERPOLATION_PRESETS = {
  * @returns Reanimated Extrapolation enum value
  */
 export const getExtrapolationMode = (
-  extrapolate?: Extrapolation
+  extrapolate?: Extrapolation,
 ): Extrapolation => {
   return extrapolate ?? Extrapolation.CLAMP;
 };
@@ -230,7 +230,7 @@ export const createTranslationRange = (from: number, to: number) => ({
 export const createInterpolation = (
   inputRange: number[],
   outputRange: number[] | string[],
-  extrapolate: Extrapolation = Extrapolation.CLAMP
+  extrapolate: Extrapolation = Extrapolation.CLAMP,
 ): InterpolationConfig => ({
   inputRange,
   outputRange,
@@ -246,7 +246,7 @@ export const createInterpolation = (
  */
 export const createFadeInterpolation = (
   scrollDistance: number,
-  fadeIn: boolean = false
+  fadeIn: boolean = false,
 ): InterpolationConfig => ({
   inputRange: [0, scrollDistance / 2, scrollDistance],
   outputRange: fadeIn ? [0, 0.5, 1] : [1, 0.5, 0],
@@ -264,7 +264,7 @@ export const createFadeInterpolation = (
 export const createScaleInterpolation = (
   scrollDistance: number,
   fromScale: number = 1,
-  toScale: number = 0.8
+  toScale: number = 0.8,
 ): InterpolationConfig => ({
   inputRange: [0, scrollDistance],
   outputRange: [fromScale, toScale],
@@ -280,7 +280,7 @@ export const createScaleInterpolation = (
  */
 export const createParallaxInterpolation = (
   scrollDistance: number,
-  parallaxFactor: number = 0.5
+  parallaxFactor: number = 0.5,
 ): InterpolationConfig => ({
   inputRange: [0, scrollDistance],
   outputRange: [0, -scrollDistance * parallaxFactor],
@@ -296,7 +296,7 @@ export const createParallaxInterpolation = (
  */
 export const createRotationInterpolation = (
   scrollDistance: number,
-  rotationDegrees: number = 360
+  rotationDegrees: number = 360,
 ): InterpolationConfig => ({
   inputRange: [0, scrollDistance],
   outputRange: [0, rotationDegrees],
@@ -344,7 +344,7 @@ export const mapRange = (
   inputMin: number,
   inputMax: number,
   outputMin: number,
-  outputMax: number
+  outputMax: number,
 ): number => {
   "worklet";
   const progress = (value - inputMin) / (inputMax - inputMin);

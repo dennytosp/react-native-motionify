@@ -68,7 +68,9 @@ describe("getExtrapolationMode", () => {
   });
 
   it("passes an explicit mode through", () => {
-    expect(getExtrapolationMode(Extrapolation.EXTEND)).toBe(Extrapolation.EXTEND);
+    expect(getExtrapolationMode(Extrapolation.EXTEND)).toBe(
+      Extrapolation.EXTEND,
+    );
   });
 });
 
@@ -88,7 +90,9 @@ describe("createInterpolation", () => {
   });
 
   it("accepts string output ranges (e.g. rotations)", () => {
-    expect(createInterpolation([0, 1], ["0deg", "180deg"], Extrapolation.EXTEND)).toEqual({
+    expect(
+      createInterpolation([0, 1], ["0deg", "180deg"], Extrapolation.EXTEND),
+    ).toEqual({
       inputRange: [0, 1],
       outputRange: ["0deg", "180deg"],
       extrapolate: Extrapolation.EXTEND,

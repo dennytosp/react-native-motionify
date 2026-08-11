@@ -195,7 +195,14 @@ export const MotionifyBottomTab: React.FC<MotionifyBottomTabProps> = ({
 
     // Default to visible
     return translateRange.from;
-  }, [hideOn, translateRange, isExcluded, idChanged, directionShared, tabBarOverride]);
+  }, [
+    hideOn,
+    translateRange,
+    isExcluded,
+    idChanged,
+    directionShared,
+    tabBarOverride,
+  ]);
 
   const animatedStyle = useAnimatedStyle(() => {
     "worklet";
@@ -214,8 +221,10 @@ export const MotionifyBottomTab: React.FC<MotionifyBottomTabProps> = ({
 /**
  * Props for MotionifyBottomTabWithInterpolation component
  */
-export interface MotionifyBottomTabWithInterpolationProps
-  extends Omit<ViewProps, "style"> {
+export interface MotionifyBottomTabWithInterpolationProps extends Omit<
+  ViewProps,
+  "style"
+> {
   /**
    * Child components to render inside the tab bar
    */
@@ -322,7 +331,7 @@ export const MotionifyBottomTabWithInterpolation: React.FC<
       actualScrollValue.value,
       inputRange,
       outputRange,
-      getExtrapolationMode()
+      getExtrapolationMode(),
     );
 
     return {
