@@ -8,9 +8,9 @@ version: 2
 # `moduleResolution=node10` should not be able to hold four harmless bumps
 # hostage in the same pull request.
 #
-# Every Dependabot pull request carries `release:skip`, so merging one never
-# publishes on its own. Remove the label from a pull request that should go
-# out as a release.
+# Published-package and workflow dependencies use the default patch release
+# when they pass CI. The example app is not shipped to npm, so its updates are
+# marked `release:skip`.
 
 updates:
   - package-ecosystem: npm
@@ -18,7 +18,7 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
-    labels: ["dependencies", "release:skip"]
+    labels: ["dependencies"]
     commit-message:
       prefix: "chore(deps)"
     groups:
@@ -49,7 +49,7 @@ updates:
     directory: /
     schedule:
       interval: weekly
-    labels: ["dependencies", "release:skip"]
+    labels: ["dependencies"]
     commit-message:
       prefix: "chore(ci)"
     groups:

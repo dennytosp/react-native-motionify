@@ -99,49 +99,13 @@ When contributing to animated code paths:
 
 ## Releasing
 
-Merging a pull request into `main` is what releases. There is no separate
-publish step to remember, and no version number to type.
+Source pull requests never bump their own version. After a merge into `main`,
+the default decision is patch when no `release:*` label is present; use
+`release:minor`, `release:major`, or `release:skip` to override it. Automation
+then prepares a separate `release/next` pull request whose merge publishes.
 
-**How the version is chosen.** Label the pull request:
-
-| Label | 1.2.3 becomes | Use for |
-| --- | --- | --- |
-| *(none)* | `1.2.4` | bug fixes, docs, internals |
-| `release:minor` | `1.3.0` | new options, presets, components |
-| `release:major` | `2.0.0` | anything that breaks existing code |
-| `release:skip` | unchanged | nothing published at all |
-
-Anything exported from `src/index.ts` is public API, so removing or renaming an
-export — or changing what a prop means — is `release:major`.
-
-**What happens.** The [bump workflow](./.github/workflows/bump.yml) writes the
-new version and moves your `Unreleased` CHANGELOG entries under it, committing
-`:bookmark: Bump version to <version>` to the pull request branch. You see the
-exact number and notes before merging, and can edit them.
-
-Merging carries that commit onto `main`, where the
-[release workflow](./.github/workflows/release.yml) sees a version the registry
-does not have yet, re-runs typecheck/tests/build, publishes with provenance,
-pushes the `v<version>` tag, and opens a GitHub Release from the CHANGELOG
-section.
-
-The target is always computed from `main`, never from the branch, so
-re-labelling is safe: minor, then major, then minor again lands on the same
-number it would have the first time.
-
-**Two things worth knowing.**
-
-CI does not re-run on the bump commit. GitHub creates a workflow run for a
-push made with `GITHUB_TOKEN` but parks it as *action required* with no jobs,
-so the pull request's head commit carries no green tick. That commit only
-rewrites the version field and moves a CHANGELOG heading; the code CI verified
-is unchanged. If you want the tick on the exact commit being merged, approve
-the parked **CI** run from the Actions tab — not the parked *Bump version* run,
-which would only rewrite the bump commit it had just made.
-
-Pull requests from forks are not bumped, because the bot cannot push to a
-fork's branch. Release those by bumping by hand after the merge, or by moving
-the branch into this repository.
+Read [RELEASING.md](./RELEASING.md) for the complete rules and copy-pasteable
+`gh` commands for creating, applying, changing, and verifying release labels.
 
 ## Questions
 
