@@ -1,0 +1,101 @@
+name: Bug report
+description: Something in react-native-motionify does not behave as documented.
+labels: ["bug", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a report. A minimal reproduction is
+        by far the most useful thing you can give us — it usually turns a
+        multi-day guessing game into a same-day fix.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what did you get instead?
+      placeholder: |
+        The bottom tab stays hidden after navigating programmatically, even though
+        `tabBar.show()` is called before `navigation.navigate(...)`.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: >
+        A link to a minimal repo or an Expo Snack, or the smallest snippet that
+        reproduces the issue. Please include the `MotionifyProvider` setup and the
+        scrollable component that wires `onScroll`.
+      render: tsx
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Scroll down until the tab bar hides
+        2. Tap the CTA that navigates to another tab
+        3. The tab bar never comes back
+    validations:
+      required: true
+
+  - type: input
+    id: motionify-version
+    attributes:
+      label: react-native-motionify version
+      placeholder: 1.0.3
+    validations:
+      required: true
+
+  - type: input
+    id: reanimated-version
+    attributes:
+      label: react-native-reanimated version
+      placeholder: 3.16.1
+    validations:
+      required: true
+
+  - type: input
+    id: rn-version
+    attributes:
+      label: React Native / Expo SDK version
+      placeholder: RN 0.81.5 (Expo SDK 54)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: platforms
+    attributes:
+      label: Platforms affected
+      options:
+        - label: iOS
+        - label: Android
+        - label: Web (react-native-web)
+
+  - type: checkboxes
+    id: architecture
+    attributes:
+      label: Architecture
+      options:
+        - label: New Architecture (Fabric) enabled
+        - label: Old Architecture (Paper)
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or stack trace
+      render: shell
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I attached `onScroll` from `useMotionify()` with `scrollEventThrottle={16}` to the scrollable component.
+          required: true
+        - label: I searched existing issues and did not find a duplicate.
+          required: true

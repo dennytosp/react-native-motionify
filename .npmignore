@@ -4,5 +4,4 @@ node_modules/
 dist/
 test/
 docs/
-CHANGELOG.md
 *.lock

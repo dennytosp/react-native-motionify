@@ -1,0 +1,35 @@
+name: Feature request
+description: Suggest a new preset, prop, or component.
+labels: ["enhancement", "needs triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: >
+        Describe the UI behaviour you are building, not just the API you want.
+        Knowing the goal often reveals a simpler fix.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API
+      description: How would you like it to look in code?
+      render: tsx
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What have you tried already?
+      description: >
+        For example, driving your own `useAnimatedStyle` from `scrollY` /
+        `directionShared`, which already covers many custom cases.
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to open a pull request for this.
