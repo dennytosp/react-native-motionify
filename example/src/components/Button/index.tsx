@@ -1,4 +1,9 @@
-import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
+import {
+  StyleProp,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '@/theme';
 import React from 'react';
@@ -11,7 +16,7 @@ type Props = {
   onPress?: () => void;
   outline?: boolean;
   isOriginal?: boolean;
-  textButtonStyle?: StyleProp<ViewStyle>;
+  textButtonStyle?: StyleProp<TextStyle>;
   style?: StyleProp<ViewStyle>;
 };
 

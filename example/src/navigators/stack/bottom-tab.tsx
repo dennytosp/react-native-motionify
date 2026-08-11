@@ -1,10 +1,7 @@
 import { BlurView } from "@react-native-community/blur";
 import {
-  BottomTabScreenProps,
   createBottomTabNavigator,
-} from "@react-navigation/bottom-tabs";
-import { CompositeScreenProps } from "@react-navigation/native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+} from "expo-router/js-tabs";
 import React from "react";
 import { StyleSheet } from "react-native";
 
@@ -20,12 +17,6 @@ export type BottomTabStackParamsList = {
   [RoutesBottomTabStack.COMPLETED]: undefined;
 };
 
-export type RootTabScreenProps<Screen extends keyof BottomTabStackParamsList> =
-  CompositeScreenProps<
-    BottomTabScreenProps<BottomTabStackParamsList, Screen>,
-    NativeStackScreenProps<BottomTabStackParamsList>
-  >;
-
 const Tab = createBottomTabNavigator<BottomTabStackParamsList>();
 
 const BottomTabStack = () => {
@@ -39,7 +30,7 @@ const BottomTabStack = () => {
           <BlurView
             style={[
               {
-                ...StyleSheet.absoluteFillObject,
+                ...StyleSheet.absoluteFill,
                 backgroundColor: "transparent",
               },
             ]}

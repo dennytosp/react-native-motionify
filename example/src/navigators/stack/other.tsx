@@ -1,5 +1,5 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@/navigators/native-stack';
 import { RoutesOtherStack } from '../routes';
 import { Onboard, Welcome } from '@/screens';
 

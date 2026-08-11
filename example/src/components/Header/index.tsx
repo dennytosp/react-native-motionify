@@ -1,7 +1,7 @@
 import { Icons } from "@/theme";
 import { isAndroid } from "@/utils/device";
 import { moderateScale, moderateVerticalScale } from "@/utils/scale";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "expo-router/react-navigation";
 import { ImageProps } from "expo-image";
 import React, { FC } from "react";
 import {

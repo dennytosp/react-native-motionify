@@ -1,42 +1,27 @@
-import React, { useEffect, useRef, useState } from "react";
-import { AppState, StatusBar } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React, { useCallback, useState } from "react";
+import { StatusBar } from "react-native";
 
 import { AppLoader } from "@/components";
 import { Splash } from "@/screens/others";
-import { useAppDispatch } from "@/stores/types";
+import { getAppState, getTaskState } from "@/stores/slices";
+import { useAppSelector } from "@/stores/types";
 import { appLoaderHolder } from "@/utils/holder";
-import { enableScreens } from "react-native-screens";
 
-type InitializeAppType = {};
+type InitializeAppProps = {
+  navigationReady: boolean;
+};
 
-const InitializeApp = (props: InitializeAppType) => {
-  const dispatch = useAppDispatch();
-  const insets = useSafeAreaInsets();
+const InitializeApp = ({ navigationReady }: InitializeAppProps) => {
+  const { isFirstTimeLaunch } = useAppSelector(getAppState);
+  const { initialLoadSettled } = useAppSelector(getTaskState);
   const [visibleBootSplash, setVisibleBootSplash] = useState(true);
 
-  const appState = useRef(AppState.currentState);
+  const appReady =
+    navigationReady && (isFirstTimeLaunch || initialLoadSettled);
 
-  enableScreens();
-  useEffect(() => {
-    const subscription = AppState.addEventListener("change", (nextAppState) => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === "active"
-      ) {
-        onAppState();
-      }
-      appState.current = nextAppState;
-    });
-
-    return () => subscription.remove();
-  }, []);
-
-  const onAppState = () => {};
-
-  const onBootSplashCompleted = async () => {
+  const onBootSplashCompleted = useCallback(() => {
     setVisibleBootSplash(false);
-  };
+  }, []);
 
   return (
     <>
@@ -48,7 +33,9 @@ const InitializeApp = (props: InitializeAppType) => {
         showHideTransition={"fade"}
       />
 
-      {visibleBootSplash && <Splash onAnimationEnd={onBootSplashCompleted} />}
+      {visibleBootSplash && (
+        <Splash ready={appReady} onAnimationEnd={onBootSplashCompleted} />
+      )}
 
       <AppLoader ref={appLoaderHolder} />
     </>

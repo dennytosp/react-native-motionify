@@ -92,7 +92,7 @@ export const AppStyles = StyleSheet.create({
     zIndex: 999,
   },
   override: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     flex: 1,
     zIndex: 999,
     height: '100%',

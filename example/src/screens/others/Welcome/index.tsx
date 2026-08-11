@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "expo-router/react-navigation";
 
 import { Button, Image } from '@/components';
 import { BoldText, RegularText } from '@/components/Text';

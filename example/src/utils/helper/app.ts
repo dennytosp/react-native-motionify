@@ -14,10 +14,10 @@ const get = (
 };
 
 const debounce = (calLback: (...args: any) => void, delay: number) => {
-  let timeout: number | NodeJS.Timeout = 0;
+  let timeout: ReturnType<typeof setTimeout> | undefined;
 
   return (...args: any) => {
-    clearTimeout(timeout);
+    if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => {
       calLback(...args);
     }, delay);

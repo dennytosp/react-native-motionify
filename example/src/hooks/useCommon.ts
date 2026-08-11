@@ -45,7 +45,7 @@ function useAsyncState<T>(
   (newValue: SetStateAction<T>, callback?: (newState: T) => void) => void,
 ] {
   const [state, setState] = useState(initialValue);
-  const _callback = useRef<(newState: T) => void>();
+  const _callback = useRef<((newState: T) => void) | undefined>(undefined);
 
   const _setState = (
     newValue: SetStateAction<T>,

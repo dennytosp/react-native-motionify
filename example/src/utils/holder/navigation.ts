@@ -4,7 +4,7 @@ import {
   NavigationContainerRef,
   StackActions,
   createNavigationContainerRef,
-} from '@react-navigation/native';
+} from "expo-router/react-navigation";
 import { RootStackParamList } from '@/navigators/stack/root';
 
 const isReadyRef =

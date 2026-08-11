@@ -13,6 +13,7 @@ import { TaskResponseModel } from '@/api/types';
 const initialTaskState: TaskState = {
   task: [],
   completedTask: [],
+  initialLoadSettled: false,
 };
 
 const taskSlice = createSlice({
@@ -40,9 +41,16 @@ const taskSlice = createSlice({
     // },
   },
   extraReducers: builder => {
+    builder.addCase(getTasks.pending, state => {
+      state.initialLoadSettled = false;
+    });
     builder.addCase(getTasks.fulfilled, (state, action) => {
       state.task = action.payload || [];
       state.completedTask = state.task.filter(item => item.isChecked);
+      state.initialLoadSettled = true;
+    });
+    builder.addCase(getTasks.rejected, state => {
+      state.initialLoadSettled = true;
     });
     builder.addCase(postAddTask.fulfilled, (state, action) => {
       state.task.push(action.payload);
