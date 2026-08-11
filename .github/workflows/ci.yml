@@ -79,3 +79,28 @@ jobs:
           name: react-native-motionify-tarball
           path: "*.tgz"
           retention-days: 7
+
+  example:
+    name: Expo example
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        working-directory: example
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Check Expo dependency versions
+        run: bunx expo install --check
+
+      - name: Run Expo Doctor
+        run: bunx expo-doctor@1.20.1

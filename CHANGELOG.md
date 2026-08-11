@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependabot updates now skip npm publishing by default. Explicit package
   version increases publish after required CI, while version decreases are
   rejected.
+- Keep the Expo example aligned with its SDK-managed dependency versions and
+  verify its frozen install and Expo Doctor result in CI.
 
 ## [1.0.4] - 2026-08-11
 
