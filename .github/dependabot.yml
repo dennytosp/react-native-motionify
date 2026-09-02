@@ -11,7 +11,7 @@ version: 2
 # decision unless a maintainer explicitly adds a release label before merge.
 
 updates:
-  - package-ecosystem: npm
+  - package-ecosystem: bun
     directory: /
     schedule:
       interval: weekly
@@ -19,6 +19,13 @@ updates:
     labels: ["dependencies"]
     commit-message:
       prefix: "chore(deps)"
+    ignore:
+      # React Native is pinned to the version the Expo example installs. Both
+      # move together, deliberately, when the Expo SDK moves.
+      - dependency-name: "react-native"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
     groups:
       dependencies:
         patterns: ["*"]
@@ -87,6 +94,10 @@ updates:
           - "version-update:semver-minor"
           - "version-update:semver-patch"
       - dependency-name: "react-native-svg"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+      - dependency-name: "@shopify/react-native-skia"
         update-types:
           - "version-update:semver-minor"
           - "version-update:semver-patch"
