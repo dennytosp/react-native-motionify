@@ -1,0 +1,127 @@
+name: Sync Expo example
+
+# `expo install --check` compares the example against the version map bundled
+# with the currently published Expo SDK, so it drifts upward on its own: a new
+# SDK patch release turns CI red without a single commit landing. Dependabot
+# cannot close that gap, because the Expo-managed packages are deliberately
+# ignored in dependabot.yml so `expo install` stays the one source of truth.
+#
+# This workflow is that source of truth on a schedule. It applies the fix, then
+# opens a pull request so the refresh is reviewed and verified by CI like any
+# other change. Nothing is pushed to main directly.
+#
+# Only trusted code from main is checked out; a pull request head is never
+# executed, matching the release workflow's posture.
+
+on:
+  schedule:
+    # Mondays, after the weekly Dependabot run so a single review covers both.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: expo-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Refresh Expo dependency versions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        working-directory: example
+        run: bun install --frozen-lockfile
+
+      - name: Align versions with the installed Expo SDK
+        id: sync
+        working-directory: example
+        run: |
+          # `--fix` stops at the first package it cannot install and reports
+          # failure, having already rewritten the rest of the manifest, so its
+          # exit code says nothing useful. It also takes more than one pass to
+          # converge: the first repairs the dependencies, a later one the
+          # devDependencies. Loop until `--check` agrees, which is the same
+          # gate CI applies.
+          for attempt in 1 2 3; do
+            bunx expo install --fix || true
+            bun install
+
+            if bunx expo install --check; then
+              echo "::notice::Versions converged after pass $attempt."
+              break
+            fi
+
+            if [ "$attempt" = 3 ]; then
+              echo "::error::expo install --fix did not converge after 3 passes."
+              exit 1
+            fi
+
+            echo "::notice::Pass $attempt left packages behind; retrying."
+          done
+
+          if git diff --quiet -- package.json bun.lock; then
+            echo "::notice::The example already matches the Expo SDK version map."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # The refresh is only worth proposing if it satisfies the gate CI applies.
+      - name: Verify the refreshed versions
+        if: steps.sync.outputs.changed == 'true'
+        working-directory: example
+        run: |
+          # Installing incrementally over a mutated manifest leaves duplicate
+          # copies behind, which expo-doctor reports as a corrupt node_modules.
+          # CI always starts from a clean runner, so reproduce that here rather
+          # than proposing a change that only passes on a warm tree.
+          rm -rf node_modules
+          bun install --frozen-lockfile
+          bunx expo install --check
+          bunx expo-doctor@1.20.1
+
+      - name: Open the refresh pull request
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH="chore/expo-sync-$GITHUB_RUN_ID"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git add example/package.json example/bun.lock
+          git commit -m "chore(example-deps): align versions with the Expo SDK"
+          git push origin "$BRANCH"
+
+          {
+            echo "\`expo install --fix\` selected the versions the installed Expo SDK expects."
+            echo
+            echo "These packages are ignored in \`dependabot.yml\`, so this workflow is the only"
+            echo "thing that moves them. \`expo install --check\` and \`expo-doctor\` both pass on"
+            echo "this branch."
+          } > /tmp/expo-sync-body.md
+
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --label dependencies \
+            --title "chore(example-deps): align versions with the Expo SDK" \
+            --body-file /tmp/expo-sync-body.md
